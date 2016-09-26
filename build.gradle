@@ -16,9 +16,10 @@ plugins {
 }
 
 apply plugin: 'kotlin'
+apply plugin: 'maven-publish'
 
 group = 'org.kt3k'
-version = '2.0.5'
+version = '2.0.6-SNAPSHOT'
 
 repositories {
   mavenCentral()
@@ -28,6 +29,31 @@ dependencies {
   compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_ver"
   compile gradleApi()
 }
+
+publishing {
+  publications {
+    myPublication(MavenPublication) {
+      // telling gradle to publish project's jar archive (2)
+      from components.java
+      // telling gradle to publish README file (2)
+      artifact ('README.md') {
+        classifier = 'README'
+        extension  = 'md'
+      }
+    }
+  }
+  // telling gradle to publish artifact to local directory (3)
+  repositories {
+    maven {
+      url "$maven_repo_url"
+      credentials {
+        username = "$maven_repo_username"
+        password = "$maven_repo_password"
+      }
+    }
+  }
+}
+
 
 modifyPom {
   project {
